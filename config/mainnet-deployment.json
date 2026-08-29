@@ -1,0 +1,16 @@
+{
+  "network": "0G Mainnet",
+  "chainId": 16661,
+  "deployedAt": "2026-08-28T16:41:29.946Z",
+  "deployer": "0x99AA335BC5990ec41CbB09716580C4358E0c27aE",
+  "contracts": {
+    "ZeroGProofRegistry": "0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f",
+    "QuantOracle": "0x447F975D0B2CDefD5536Ec5A72afc43838c903dD",
+    "StrategyVault": "0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A"
+  },
+  "explorers": {
+    "ZeroGProofRegistry": "https://chainscan.0g.ai/address/0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f",
+    "QuantOracle": "https://chainscan.0g.ai/address/0x447F975D0B2CDefD5536Ec5A72afc43838c903dD",
+    "StrategyVault": "https://chainscan.0g.ai/address/0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A"
+  }
+}

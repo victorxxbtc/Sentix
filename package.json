@@ -1,0 +1,42 @@
+{
+  "name": "sentix-quant0g",
+  "version": "1.0.0",
+  "description": "Verifiable DeFAI Trading Copilot & Transparent Strategy Vault on 0G Chain, 0G Storage, and 0G Compute",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node scripts/server.js",
+    "compile:contracts": "node ./node_modules/hardhat/internal/cli/cli.js compile",
+    "test:contracts": "node ./node_modules/hardhat/internal/cli/cli.js test",
+    "deploy:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/deploy.ts --network zeroGTestnet",
+    "deploy:mainnet": "node scripts/deploy-mainnet.js",
+    "test:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/test-0g-live.ts",
+    "verify:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/verify-0g-live.ts",
+    "agent": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/agent-runner.ts"
+  },
+  "keywords": [
+    "0G",
+    "zero-gravity",
+    "defai",
+    "trading-bot",
+    "quant",
+    "commit-reveal",
+    "verifiable-compute",
+    "vault",
+    "mainnet"
+  ],
+  "author": "Sentix Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@types/node": "^20.11.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "ethers": "^6.11.1",
+    "axios": "^1.6.8"
+  }
+}
