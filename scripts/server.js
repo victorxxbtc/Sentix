@@ -6,17 +6,17 @@ const MIME_TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/java
 
 const NETWORKS = {
   mainnet: {
-    NAME: "0G Mainnet", CHAIN_ID: 16661, CHAIN_ID_HEX: '0x4115',
-    RPC_URL: process.env.ZERO_G_MAINNET_RPC || 'https://evmrpc.0g.ai',
-    EXPLORER_URL: 'https://chainscan.0g.ai', STORAGE_INDEXER: 'https://indexer-storage.0g.ai',
+    NAME: "Midnight Testnet", CHAIN_ID: 16661, CHAIN_ID_HEX: '0x4115',
+    RPC_URL: process.env.MIDNIGHT_MAINNET_RPC || 'https://rpc.devnet.midnight.network',
+    EXPLORER_URL: 'https://explorer.devnet.midnight.network', STORAGE_INDEXER: 'https://indexer.devnet.midnight.network',
     VAULT_ADDRESS: '0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A',
     REGISTRY_ADDRESS: '0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f',
     ORACLE_ADDRESS: '0x447F975D0B2CDefD5536Ec5A72afc43838c903dD'
   },
-  galileo: {
-    NAME: "0G Galileo Testnet", CHAIN_ID: 16600, CHAIN_ID_HEX: '0x40D8',
-    RPC_URL: process.env.ZERO_G_TESTNET_RPC || 'https://rpc-galileo.0g.ai',
-    EXPLORER_URL: 'https://chainscan-galileo.0g.ai', STORAGE_INDEXER: 'https://indexer-storage-galileo.0g.ai',
+  devnet: {
+    NAME: "Midnight DevNet", CHAIN_ID: 16600, CHAIN_ID_HEX: '0x40D8',
+    RPC_URL: process.env.MIDNIGHT_TESTNET_RPC || 'https://rpc.devnet.midnight.network',
+    EXPLORER_URL: 'https://explorer.devnet.midnight.network', STORAGE_INDEXER: 'https://indexer.devnet.midnight.network',
     VAULT_ADDRESS: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
     REGISTRY_ADDRESS: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     ORACLE_ADDRESS: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0'
@@ -42,14 +42,14 @@ async function handleApi(req, res, pathname) {
       mainnetBlock = await Promise.race([p.getBlockNumber(), new Promise((_, r) => setTimeout(r, 2500))]).catch(() => null);
     } catch {}
     try {
-      const p = new ethers.JsonRpcProvider(NETWORKS.galileo.RPC_URL, undefined, { staticNetwork: true });
+      const p = new ethers.JsonRpcProvider(NETWORKS.devnet.RPC_URL, undefined, { staticNetwork: true });
       testnetBlock = await Promise.race([p.getBlockNumber(), new Promise((_, r) => setTimeout(r, 2500))]).catch(() => null);
     } catch {}
 
     return res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({
       success: true,
       mainnet: { chainId: 16661, rpc: NETWORKS.mainnet.RPC_URL, latestBlock: mainnetBlock || 42891428, contracts: { vault: NETWORKS.mainnet.VAULT_ADDRESS, registry: NETWORKS.mainnet.REGISTRY_ADDRESS, oracle: NETWORKS.mainnet.ORACLE_ADDRESS } },
-      testnet: { chainId: 16600, rpc: NETWORKS.galileo.RPC_URL, latestBlock: testnetBlock || 184204, contracts: { vault: NETWORKS.galileo.VAULT_ADDRESS, registry: NETWORKS.galileo.REGISTRY_ADDRESS, oracle: NETWORKS.galileo.ORACLE_ADDRESS } }
+      testnet: { chainId: 16600, rpc: NETWORKS.devnet.RPC_URL, latestBlock: testnetBlock || 184204, contracts: { vault: NETWORKS.devnet.VAULT_ADDRESS, registry: NETWORKS.devnet.REGISTRY_ADDRESS, oracle: NETWORKS.devnet.ORACLE_ADDRESS } }
     }));
   }
 
@@ -59,21 +59,21 @@ async function handleApi(req, res, pathname) {
     req.on('end', async () => {
       try {
         const parsed = body ? JSON.parse(body) : {};
-        const cfg = NETWORKS[parsed.network === 'galileo' ? 'galileo' : 'mainnet'];
+        const cfg = NETWORKS[parsed.network === 'devnet' ? 'devnet' : 'mainnet'];
         tradeCounter++;
-        const id = tradeCounter, pairs = ["0G/USDT", "ETH/0G", "BTC/0G", "SOL/0G"], pair = parsed.pair || pairs[id % pairs.length];
+        const id = tradeCounter, pairs = ["NIGHT/USDT", "ETH/NIGHT", "BTC/NIGHT", "SOL/NIGHT"], pair = parsed.pair || pairs[id % pairs.length];
         const action = Math.random() > 0.4 ? "BUY" : "SELL", amountStr = "0.10", amountWei = ethers.parseEther(amountStr);
         const salt = ethers.hexlify(ethers.randomBytes(32));
         const commitHash = ethers.solidityPackedKeccak256(["string", "uint256", "bytes32"], [action, amountWei, salt]);
         let confidence = (86 + Math.random() * 10).toFixed(1), alphaBps = Math.floor(120 + Math.random() * 120);
-        let reasoning = `Orderbook bid volume surged by 42% on 0G DEX. Funding rate arbitrage window detected between Spot and Perpetual market on ${cfg.NAME}. Alpha forecast +${alphaBps} bps with ${confidence}% confidence.`;
+        let reasoning = `Orderbook bid volume surged by 42% on Midnight DEX. Funding rate arbitrage window detected between Spot and Perpetual market on ${cfg.NAME}. Alpha forecast +${alphaBps} bps with ${confidence}% confidence.`;
 
         if (process.env.OPENROUTER_API_KEY) {
           try {
             const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
               method: 'POST',
               headers: { 'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct', messages: [{ role: 'user', content: `Analyze market microstructure for ${pair} with orderbook imbalance +${alphaBps} bps on 0G. Return 2-sentence precise math thesis.` }], max_tokens: 120 })
+              body: JSON.stringify({ model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct', messages: [{ role: 'user', content: `Analyze market microstructure for ${pair} with orderbook imbalance +${alphaBps} bps on Midnight. Return 2-sentence precise math thesis.` }], max_tokens: 120 })
             });
             const data = await r.json();
             if (data?.choices?.[0]?.message?.content) reasoning = data.choices[0].message.content.trim();
@@ -81,7 +81,7 @@ async function handleApi(req, res, pathname) {
         }
 
         // 1KB Segment Merkle DAG Chunking
-        const snap = Buffer.from(JSON.stringify({ tradeId: id, pair, action, amount: `${amountStr} 0G`, confidence: `${confidence}%`, alpha: `+${alphaBps} bps`, reasoning, salt, commitHash, network: cfg.NAME, ts: Date.now() }));
+        const snap = Buffer.from(JSON.stringify({ tradeId: id, pair, action, amount: `${amountStr} Midnight`, confidence: `${confidence}%`, alpha: `+${alphaBps} bps`, reasoning, salt, commitHash, network: cfg.NAME, ts: Date.now() }));
         const chunks = [];
         for (let i = 0; i < snap.length; i += 1024) chunks.push(snap.subarray(i, Math.min(i + 1024, snap.length)));
         let lvl = chunks.map(c => ethers.keccak256(c));
@@ -97,7 +97,7 @@ async function handleApi(req, res, pathname) {
 
         res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({
           success: true,
-          trade: { id, pair, action, amount: `${amountStr} 0G`, salt, commitHash, storageRoot, chunkCount: chunks.length, dataUri: `0g://storage/market-snapshot/${storageRoot}`, confidence: `${confidence}%`, expectedAlpha: `+${alphaBps} bps`, reasoning, status: 'Committed' }
+          trade: { id, pair, action, amount: `${amountStr} Midnight`, salt, commitHash, storageRoot, chunkCount: chunks.length, dataUri: `midnight://ledger/market-snapshot/${storageRoot}`, confidence: `${confidence}%`, expectedAlpha: `+${alphaBps} bps`, reasoning, status: 'Committed' }
         }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' }).end(JSON.stringify({ success: false, error: e.message }));
@@ -119,7 +119,7 @@ function startServer(port) {
     });
   });
   s.on('error', e => e.code === 'EADDRINUSE' ? startServer(port + 1) : console.error(e));
-  s.listen(port, () => console.log(`[Sentix] Live at: http://localhost:${port}`));
+  s.listen(port, () => console.log(`[SilentQuant] Live at: http://localhost:${port}`));
 }
 
 startServer(parseInt(process.env.PORT || '3000', 10));

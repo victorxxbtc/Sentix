@@ -2,17 +2,12 @@
   "name": "silentquant-protocol",
   "version": "1.0.0",
   "description": "Shielded DeFAI Strategy Vault & MEV-Proof Quantitative Trading Engine on Midnight Network",
-  "main": "index.js",
+  "main": "scripts/server.js",
   "scripts": {
+    "start": "node scripts/server.js",
     "dev": "node scripts/server.js",
     "verify:midnight": "node scripts/verify-midnight.js",
-    "compile:contracts": "node ./node_modules/hardhat/internal/cli/cli.js compile",
-    "test:contracts": "node ./node_modules/hardhat/internal/cli/cli.js test",
-    "deploy:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/deploy.ts --network zeroGTestnet",
-    "deploy:mainnet": "node scripts/deploy-mainnet.js",
-    "test:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/test-0g-live.ts",
-    "verify:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/verify-0g-live.ts",
-    "agent": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/agent-runner.ts"
+    "test": "node scripts/verify-midnight.js"
   },
   "keywords": [
     "midnight-network",
@@ -20,21 +15,17 @@
     "compact",
     "defai",
     "dark-pool",
-    "proof-of-solvency",
-    "mev-protection"
+    "proof-of-solvency"
   ],
   "author": "SilentQuant Research <research@silentquant.fi>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@types/node": "^20.11.0",
     "dotenv": "^16.4.5",
-    "hardhat": "^2.22.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2",
     "ethers": "^6.11.1",
     "axios": "^1.6.8"
   }

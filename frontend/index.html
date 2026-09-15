@@ -107,9 +107,9 @@
           <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">BTC / tDUST</span><span class="text-emerald-quant">+240 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[74%]"></div><div class="bg-rose-500 h-full w-[26%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 74%</span><span>Ask 26%</span></div></div>
         </div>
         <div id="terminalLog" class="bg-[#050505] border border-white/[0.08] p-3 rounded text-[11px] space-y-1.5 text-zinc-300 max-h-36 overflow-y-auto custom-scrollbar">
-          <div><span class="text-zinc-600">[System]</span> Midnight Testnet RPC Connected: https://evmrpc.0g.ai</div>
+          <div><span class="text-zinc-600">[System]</span> Midnight Testnet RPC Connected: https://rpc.devnet.midnight.network</div>
           <div><span class="text-emerald-quant">[StrategyVault]</span> Mainnet Contract: <span id="logVaultAddress" class="text-white">0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A</span></div>
-          <div><span class="text-cyan-400">[0G-Storage]</span> Merkle DAG Indexer ready with confirmable on-chain receipts.</div>
+          <div><span class="text-cyan-400">[Midnight-Ledger]</span> Merkle DAG Indexer ready with confirmable on-chain receipts.</div>
         </div>
       </div>
     </div>
@@ -157,13 +157,13 @@
   </div>
 
   <footer id="footerText" class="border-t border-white/[0.08] bg-[#050505] py-3.5 px-4 text-center font-mono text-[11px] text-zinc-500">
-    Sentix (Quant0G) · Midnight Testnet (16661) · Swiss Linear System
+    SilentQuant (Midnight ZK) · Midnight Testnet (16661) · Swiss Linear System
   </footer>
 
   <script>
     const NETWORKS = {
-      mainnet: { NAME: "Midnight Testnet", CHAIN_ID: 16661n, CHAIN_ID_HEX: '0x4115', RPC_URL: 'https://evmrpc.0g.ai', EXPLORER_URL: 'https://chainscan.0g.ai', STORAGE_INDEXER: 'https://indexer-storage.0g.ai', VAULT_ADDRESS: '0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A', REGISTRY_ADDRESS: '0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f' },
-      galileo: { NAME: "Midnight DevNet", CHAIN_ID: 16600n, CHAIN_ID_HEX: '0x40D8', RPC_URL: 'https://rpc-galileo.0g.ai', EXPLORER_URL: 'https://chainscan-galileo.0g.ai', STORAGE_INDEXER: 'https://indexer-storage-galileo.0g.ai', VAULT_ADDRESS: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', REGISTRY_ADDRESS: '0x5FbDB2315678afecb367f032d93F642f64180aa3' }
+      mainnet: { NAME: "Midnight Testnet", CHAIN_ID: 16661n, CHAIN_ID_HEX: '0x4115', RPC_URL: 'https://rpc.devnet.midnight.network', EXPLORER_URL: 'https://explorer.devnet.midnight.network', STORAGE_INDEXER: 'https://indexer.devnet.midnight.network', VAULT_ADDRESS: '0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A', REGISTRY_ADDRESS: '0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f' },
+      devnet: { NAME: "Midnight DevNet", CHAIN_ID: 16600n, CHAIN_ID_HEX: '0x40D8', RPC_URL: 'https://rpc.devnet.midnight.network', EXPLORER_URL: 'https://explorer.devnet.midnight.network', STORAGE_INDEXER: 'https://indexer.devnet.midnight.network', VAULT_ADDRESS: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', REGISTRY_ADDRESS: '0x5FbDB2315678afecb367f032d93F642f64180aa3' }
     };
     let currentNetworkKey = 'mainnet', userAddress = null, provider = null, signer = null, vaultContract = null, registryContract = null, isAutoAgentActive = false, autoAgentInterval = null, currentVaultTab = 'deposit', userBalance = 1.10, vaultTVL = 14250.0, proofsCount = 1842, activeFilter = 'all';
 
@@ -171,9 +171,9 @@
     const REGISTRY_ABI = ["function isProofConfirmed(bytes32 storageRoot) external view returns (bool)"];
 
     let trades = [
-      { id: 1084, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt: "0x89a3f2d1e0c4b7a892b5123456789abcdef0123456789abcdef0123456789abcdef", commitHash: "0x3b89fa7652c0028e932bce1274ba1804f5a6b0c2014631398867a1ef2459b701", storageRoot: "0x7a812b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d13ed0d82", status: "Confirmed", confidence: "91.2%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid volume surged by 42% on tDUST DEX. Funding rate arbitrage window detected between Spot and Perpetual market on Midnight Testnet." },
-      { id: 1083, pair: "ETH/0G", action: "SELL", amount: "0.15 0G", salt: "0x43b2f1e0d9c8a7b6543210fedcba9876543210fedcba9876543210fedcba9876", commitHash: "0x91ef841c7b802e3a19b027814b7450a80e1236fb4890c2a865b400921e48ba02", storageRoot: "0x4f128c7901ea2b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d", status: "Confirmed", confidence: "87.8%", expectedAlpha: "+115 bps", reasoning: "Cross-chain liquidity migration signal detected. Mean reversion trigger hit on 4h timeframe." },
-      { id: 1082, pair: "BTC/0G", action: "BUY", amount: "0.20 0G", salt: "0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123", commitHash: "0x5511dc6d6ecc39e286332d4b0cd3148fa9916d623956de4a52551f637fb35dd8", storageRoot: "0x21d889b8738f4adb5afb4d84e7c059bc102a41ecd778ed4bb8dfc5f373ca1524", status: "Committed", confidence: "94.5%", expectedAlpha: "+240 bps", reasoning: "Deep neural transformer observed multi-exchange liquidity compression. Volatility breakout confirmed on 15m candle." }
+      { id: 1084, pair: "NIGHT/USDT", action: "BUY", amount: "0.10 Midnight", salt: "0x89a3f2d1e0c4b7a892b5123456789abcdef0123456789abcdef0123456789abcdef", commitHash: "0x3b89fa7652c0028e932bce1274ba1804f5a6b0c2014631398867a1ef2459b701", storageRoot: "0x7a812b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d13ed0d82", status: "Confirmed", confidence: "91.2%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid volume surged by 42% on tDUST DEX. Funding rate arbitrage window detected between Spot and Perpetual market on Midnight Testnet." },
+      { id: 1083, pair: "ETH/tDUST", action: "SELL", amount: "0.15 Midnight", salt: "0x43b2f1e0d9c8a7b6543210fedcba9876543210fedcba9876543210fedcba9876", commitHash: "0x91ef841c7b802e3a19b027814b7450a80e1236fb4890c2a865b400921e48ba02", storageRoot: "0x4f128c7901ea2b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d", status: "Confirmed", confidence: "87.8%", expectedAlpha: "+115 bps", reasoning: "Cross-chain liquidity migration signal detected. Mean reversion trigger hit on 4h timeframe." },
+      { id: 1082, pair: "BTC/tDUST", action: "BUY", amount: "0.20 Midnight", salt: "0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123", commitHash: "0x5511dc6d6ecc39e286332d4b0cd3148fa9916d623956de4a52551f637fb35dd8", storageRoot: "0x21d889b8738f4adb5afb4d84e7c059bc102a41ecd778ed4bb8dfc5f373ca1524", status: "Committed", confidence: "94.5%", expectedAlpha: "+240 bps", reasoning: "Deep neural transformer observed multi-exchange liquidity compression. Volatility breakout confirmed on 15m candle." }
     ];
 
     function getCurrentConfig() { return NETWORKS[currentNetworkKey]; }
@@ -182,7 +182,7 @@
       currentNetworkKey = key;
       const cfg = getCurrentConfig();
       document.getElementById('btnToggleMainnet').className = key === 'mainnet' ? "px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black shadow-sm" : "px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white";
-      document.getElementById('btnToggleTestnet').className = key === 'galileo' ? "px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black shadow-sm" : "px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white";
+      document.getElementById('btnToggleTestnet').className = key === 'devnet' ? "px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black shadow-sm" : "px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white";
       document.getElementById('networkHeroLabel').innerText = key === 'mainnet' ? "Midnight Testnet Production Mode (Live On-Chain)" : "Midnight DevNet Evaluation Mode";
       document.getElementById('tickerNetwork').innerText = `${cfg.NAME.toUpperCase()} (${cfg.CHAIN_ID})`;
       document.getElementById('activeNetworkDisplay').innerText = cfg.NAME;
@@ -190,7 +190,7 @@
       document.getElementById('vaultContractAddressText').innerText = `${cfg.VAULT_ADDRESS.slice(0,6)}...${cfg.VAULT_ADDRESS.slice(-4)}`;
       document.getElementById('logVaultAddress').innerText = cfg.VAULT_ADDRESS;
       document.getElementById('tickerContract').innerText = `${cfg.VAULT_ADDRESS.slice(0,6)}...${cfg.VAULT_ADDRESS.slice(-4)}`;
-      document.getElementById('footerText').innerText = `Sentix (Quant0G) · ${cfg.NAME} (${cfg.CHAIN_ID}) · Swiss Linear System`;
+      document.getElementById('footerText').innerText = `SilentQuant (Midnight ZK) · ${cfg.NAME} (${cfg.CHAIN_ID}) · Swiss Linear System`;
       appendTerminalLog(`[System] Switched context to <span class="text-emerald-quant">${cfg.NAME}</span> (RPC: ${cfg.RPC_URL})`);
       if (window.ethereum && userAddress) {
         try { await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: cfg.CHAIN_ID_HEX }] }); } catch {}
@@ -215,8 +215,8 @@
       const btn = document.getElementById('btn-wallet'), status = document.getElementById('wallet-status-label'), bal = document.getElementById('user-balance-display');
       if (userAddress) {
         const short = `${userAddress.slice(0,6)}...${userAddress.slice(-4)}`;
-        btn.innerText = short; status.innerText = `Connected: ${short}`; bal.innerText = `${userBalance.toFixed(2)} 0G`;
-      } else { btn.innerText = "Connect Wallet"; status.innerText = "Wallet not connected"; bal.innerText = "0.00 0G"; }
+        btn.innerText = short; status.innerText = `Connected: ${short}`; bal.innerText = `${userBalance.toFixed(2)} Midnight`;
+      } else { btn.innerText = "Connect Wallet"; status.innerText = "Wallet not connected"; bal.innerText = "0.00 Midnight"; }
     }
 
     function switchVaultTab(tab) {
@@ -225,7 +225,7 @@
       document.getElementById('tabWithdraw').className = tab === 'withdraw' ? "flex-1 py-1.5 rounded text-xs font-bold bg-emerald-quant text-black" : "flex-1 py-1.5 rounded text-xs font-bold text-zinc-400 hover:text-white";
       document.getElementById('vaultActionBtn').innerText = tab === 'deposit' ? "Deposit to Vault (On-Chain)" : "Withdraw from Vault (On-Chain)";
       document.getElementById('amountInputLabel').innerText = tab === 'deposit' ? "Amount to Deposit" : "Amount to Withdraw";
-      document.getElementById('maxBalanceClick').innerText = `Max: ${tab === 'deposit' ? userBalance.toFixed(2) : "10.00"} 0G`;
+      document.getElementById('maxBalanceClick').innerText = `Max: ${tab === 'deposit' ? userBalance.toFixed(2) : "10.00"} Midnight`;
     }
 
     function fillMaxAmount() { document.getElementById('vaultAmountInput').value = currentVaultTab === 'deposit' ? userBalance.toFixed(2) : "10.00"; }
@@ -248,19 +248,19 @@
     function executeSimulatedVault(val) {
       if (currentVaultTab === 'deposit') { userBalance -= val; vaultTVL += val; appendTerminalLog(`[Deposit Confirmed] Deposited ${val.toFixed(2)} tDUST into StrategyVault.`); }
       else { vaultTVL -= val; userBalance += val; appendTerminalLog(`[Withdrawal Confirmed] Withdrew ${val.toFixed(2)} tDUST from StrategyVault.`); }
-      document.getElementById('user-balance-display').innerText = `${userBalance.toFixed(2)} 0G`;
-      document.getElementById('tvl-display').innerText = `${vaultTVL.toLocaleString('en-US', { minimumFractionDigits: 2 })} 0G`;
+      document.getElementById('user-balance-display').innerText = `${userBalance.toFixed(2)} Midnight`;
+      document.getElementById('tvl-display').innerText = `${vaultTVL.toLocaleString('en-US', { minimumFractionDigits: 2 })} Midnight`;
     }
 
     async function triggerQuantTrade() {
       const cfg = getCurrentConfig();
-      appendTerminalLog(`<span class="text-purple-400">[0G-Compute]</span> Querying Quant Neural Inference Engine on ${cfg.NAME}...`);
+      appendTerminalLog(`<span class="text-purple-400">[Midnight-Prover]</span> Querying Quant Neural Inference Engine on ${cfg.NAME}...`);
       try {
         const res = await fetch('/api/generate-trade', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ network: currentNetworkKey }) });
         const data = await res.json();
         if (data?.success && data.trade) {
           const t = data.trade;
-          appendTerminalLog(`<span class="text-cyan-400">[0G-Storage]</span> Archived to ${cfg.STORAGE_INDEXER}. Merkle Root: <span class="text-white">${t.storageRoot.slice(0,16)}...</span>`);
+          appendTerminalLog(`<span class="text-cyan-400">[Midnight-Ledger]</span> Archived to ${cfg.STORAGE_INDEXER}. Merkle Root: <span class="text-white">${t.storageRoot.slice(0,16)}...</span>`);
           trades.unshift(t); proofsCount++; renderTrades();
           setTimeout(() => { t.status = "Confirmed"; appendTerminalLog(`<span class="text-emerald-quant">[${cfg.NAME}]</span> Trade #${t.id} preimage verified & executed!`); renderTrades(); }, 1800);
           return;
@@ -268,7 +268,7 @@
       } catch {}
       // Heuristic fallback
       const id = trades[0].id + 1, salt = ethers.hexlify(ethers.randomBytes(32)), root = ethers.hexlify(ethers.randomBytes(32));
-      const t = { id, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt, commitHash: ethers.solidityPackedKeccak256(["string","uint256","bytes32"], ["BUY", ethers.parseEther("0.1"), salt]), storageRoot: root, status: "Committed", confidence: "92.4%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid imbalance surge confirmed on tDUST DEX." };
+      const t = { id, pair: "NIGHT/USDT", action: "BUY", amount: "0.10 Midnight", salt, commitHash: ethers.solidityPackedKeccak256(["string","uint256","bytes32"], ["BUY", ethers.parseEther("0.1"), salt]), storageRoot: root, status: "Committed", confidence: "92.4%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid imbalance surge confirmed on tDUST DEX." };
       trades.unshift(t); proofsCount++; renderTrades();
       setTimeout(() => { t.status = "Confirmed"; appendTerminalLog(`<span class="text-emerald-quant">[${cfg.NAME}]</span> Trade #${id} confirmed!`); renderTrades(); }, 1800);
     }
@@ -300,7 +300,7 @@
           <td class="p-2.5 text-emerald-quant font-bold">${t.status}</td>
           <td class="p-2.5 text-center"><button onclick="openProofModal(${t.id})" class="px-2 py-1 rounded bg-[#050505] hover:bg-zinc-800 text-cyan-400 border border-white/[0.08]"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></button></td>
         </tr>`).join('');
-      document.getElementById('tvl-display').innerText = `${vaultTVL.toLocaleString('en-US', { minimumFractionDigits: 2 })} 0G`;
+      document.getElementById('tvl-display').innerText = `${vaultTVL.toLocaleString('en-US', { minimumFractionDigits: 2 })} Midnight`;
       document.getElementById('proofs-display').innerText = `${proofsCount.toLocaleString()} Snapshots`;
       document.getElementById('tickerProofs').innerText = `${proofsCount.toLocaleString()} ANCHORED`;
     }
