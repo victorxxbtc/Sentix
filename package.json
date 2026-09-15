@@ -1,10 +1,11 @@
 {
-  "name": "sentix-quant0g",
+  "name": "silentquant-protocol",
   "version": "1.0.0",
-  "description": "Verifiable DeFAI Trading Copilot & Transparent Strategy Vault on 0G Chain, 0G Storage, and 0G Compute",
+  "description": "Shielded DeFAI Strategy Vault & MEV-Proof Quantitative Trading Engine on Midnight Network",
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/server.js",
+    "verify:midnight": "node scripts/verify-midnight.js",
     "compile:contracts": "node ./node_modules/hardhat/internal/cli/cli.js compile",
     "test:contracts": "node ./node_modules/hardhat/internal/cli/cli.js test",
     "deploy:0g": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/deploy.ts --network zeroGTestnet",
@@ -14,18 +15,16 @@
     "agent": "node ./node_modules/hardhat/internal/cli/cli.js run scripts/agent-runner.ts"
   },
   "keywords": [
-    "0G",
-    "zero-gravity",
+    "midnight-network",
+    "zero-knowledge",
+    "compact",
     "defai",
-    "trading-bot",
-    "quant",
-    "commit-reveal",
-    "verifiable-compute",
-    "vault",
-    "mainnet"
+    "dark-pool",
+    "proof-of-solvency",
+    "mev-protection"
   ],
-  "author": "Sentix Team",
-  "license": "MIT",
+  "author": "SilentQuant Research <research@silentquant.fi>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@types/node": "^20.11.0",

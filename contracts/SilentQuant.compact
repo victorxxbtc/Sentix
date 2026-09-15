@@ -1,0 +1,159 @@
+// SilentQuant: Shielded DeFAI Strategy Vault & MEV-Proof Quantitative Execution Protocol
+// Network: Midnight Network (DevNet / Testnet)
+// Language: Midnight Compact 0.2
+// License: Apache-2.0
+// Domain: Zero-Knowledge Proof of Solvency, Dark Intent Matching & Algorithmic Policy Guards
+
+pragma language_version >= 0.2.0;
+
+import CompactStandardLibrary;
+
+export enum VaultStatus {
+    Operational,
+    PausedByCircuitBreaker,
+    Auditing
+}
+
+export struct VaultRecord {
+    id: Bytes<32>,
+    manager_commitment: Bytes<32>,
+    total_shares: Uint<64>,
+    last_verified_nav: Uint<64>,
+    last_solvency_epoch: Uint<64>,
+    status: VaultStatus
+}
+
+export struct DarkOrder {
+    order_id: Bytes<32>,
+    vault_id: Bytes<32>,
+    order_commitment: Bytes<32>,
+    max_slippage_bps: Uint<16>,
+    is_settled: Boolean
+}
+
+// On-Chain Public Dual-Ledger State
+export ledger {
+    vaults: Map<Bytes<32>, VaultRecord>,
+    dark_orders: Map<Bytes<32>, DarkOrder>,
+    spent_nullifiers: Set<Bytes<32>>,
+    total_shielded_aum: Uint<64>,
+    governance_admin: Bytes<32>
+}
+
+// Private Witness Declarations
+witness private_strategy_seed(): Bytes<32>;
+witness private_asset_valuation(): Uint<64>;
+witness private_liability_valuation(): Uint<64>;
+witness private_historical_drawdown_bps(): Uint<16>;
+witness private_order_salt(): Bytes<32>;
+
+// Contract Initializer Circuit
+export circuit initialize(admin_key: Bytes<32>): [] {
+    assert governance_admin == 0x0000000000000000000000000000000000000000000000000000000000000000;
+    governance_admin = admin_key;
+    total_shielded_aum = 0;
+}
+
+// Circuit: Create and register a new shielded strategy vault
+export circuit register_vault(
+    vault_id: Bytes<32>,
+    manager_commitment: Bytes<32>,
+    initial_shares: Uint<64>,
+    initial_nav: Uint<64>
+): [] {
+    assert !vaults.member(vault_id);
+
+    vaults.insert(vault_id, VaultRecord {
+        id: vault_id,
+        manager_commitment: manager_commitment,
+        total_shares: initial_shares,
+        last_verified_nav: initial_nav,
+        last_solvency_epoch: 1,
+        status: VaultStatus.Operational
+    });
+
+    total_shielded_aum = total_shielded_aum + initial_nav;
+}
+
+// Circuit: Prove Solvency without leaking trading book or open positions
+export circuit prove_solvency(
+    vault_id: Bytes<32>,
+    solvency_nullifier: Bytes<32>,
+    target_nav: Uint<64>,
+    claimed_max_drawdown_bps: Uint<16>
+): [] {
+    assert !spent_nullifiers.member(solvency_nullifier);
+    spent_nullifiers.insert(solvency_nullifier);
+
+    assert vaults.member(vault_id);
+    const current_record = vaults.lookup(vault_id);
+    assert current_record.status == VaultStatus.Operational;
+
+    // Witness extraction
+    const seed = private_strategy_seed();
+    const assets = private_asset_valuation();
+    const liabilities = private_liability_valuation();
+    const drawdown = private_historical_drawdown_bps();
+
+    // 1. Solvency Invariant: Assets >= Liabilities
+    assert assets >= liabilities;
+
+    // 2. NAV Proof Invariant
+    const net_assets = assets - liabilities;
+    assert net_assets >= target_nav;
+
+    // 3. Risk Boundary Invariant
+    assert drawdown <= claimed_max_drawdown_bps;
+
+    // 4. Update Public Dual-Ledger
+    vaults.insert(vault_id, VaultRecord {
+        id: vault_id,
+        manager_commitment: current_record.manager_commitment,
+        total_shares: current_record.total_shares,
+        last_verified_nav: net_assets,
+        last_solvency_epoch: current_record.last_solvency_epoch + 1,
+        status: VaultStatus.Operational
+    });
+}
+
+// Circuit: Submit a Dark Order into MEV-Proof Matching Pool
+export circuit submit_dark_order(
+    order_id: Bytes<32>,
+    vault_id: Bytes<32>,
+    order_commitment: Bytes<32>,
+    allowed_slippage_bps: Uint<16>
+): [] {
+    assert vaults.member(vault_id);
+    const vault = vaults.lookup(vault_id);
+    assert vault.status == VaultStatus.Operational;
+
+    assert !dark_orders.member(order_id);
+
+    dark_orders.insert(order_id, DarkOrder {
+        order_id: order_id,
+        vault_id: vault_id,
+        order_commitment: order_commitment,
+        max_slippage_bps: allowed_slippage_bps,
+        is_settled: false
+    });
+}
+
+// Circuit: Automated Volatility Circuit Breaker Trigger
+export circuit trip_circuit_breaker(
+    vault_id: Bytes<32>,
+    market_volatility_index: Uint<16>,
+    threshold_index: Uint<16>
+): [] {
+    assert market_volatility_index > threshold_index;
+    assert vaults.member(vault_id);
+    const vault = vaults.lookup(vault_id);
+
+    vaults.insert(vault_id, VaultRecord {
+        id: vault_id,
+        manager_commitment: vault.manager_commitment,
+        total_shares: vault.total_shares,
+        last_verified_nav: vault.last_verified_nav,
+        last_solvency_epoch: vault.last_solvency_epoch,
+        status: VaultStatus.PausedByCircuitBreaker
+    });
+}

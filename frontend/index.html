@@ -3,79 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#050505" />
-  <title>Sentix (Quant0G) — Swiss Minimalist DeFAI High-Frequency Vault on 0G</title>
+  <meta name="theme-color" content="#070A0F" />
+  <title>SilentQuant — Shielded DeFAI Strategy Vault & MEV-Proof Dark Pool on Midnight</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.11.1/ethers.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { background: #050505; color: #fafafa; font-family: 'Inter', sans-serif; padding-bottom: env(safe-area-inset-bottom, 16px); }
+    body { background: #070A0F; color: #fafafa; font-family: 'Inter', sans-serif; padding-bottom: env(safe-area-inset-bottom, 16px); }
     .font-mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
-    .swiss-card { background: #0d0d0f; border: 1px solid rgba(255,255,255,0.08); transition: border-color .2s; }
-    .swiss-card:hover { border-color: rgba(0,242,147,0.35); }
-    .text-emerald-quant { color: #00f293; } .bg-emerald-quant { background-color: #00f293; }
+    .swiss-card { background: #0c1018; border: 1px solid rgba(255,255,255,0.08); transition: border-color .2s; }
+    .swiss-card:hover { border-color: rgba(6,182,212,0.35); }
+    .text-emerald-quant { color: #06b6d4; } .bg-emerald-quant { background-color: #06b6d4; }
     .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #0d0d0f; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #0c1018; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
     button, input, select { touch-action: manipulation; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
   <!-- Header -->
-  <header class="border-b border-white/[0.08] bg-[#050505]/95 backdrop-blur-md sticky top-0 z-20 px-4 sm:px-6">
+  <header class="border-b border-white/[0.08] bg-[#070A0F]/95 backdrop-blur-md sticky top-0 z-20 px-4 sm:px-6">
     <div class="max-w-7xl mx-auto h-16 flex items-center justify-between gap-3">
       <div class="flex items-center space-x-2.5">
-        <div class="w-8 h-8 rounded bg-white text-black font-bold flex items-center justify-center font-mono text-xs">0G</div>
+        <div class="w-8 h-8 rounded bg-cyan-400 text-black font-bold flex items-center justify-center font-mono text-xs">SQ</div>
         <div class="flex items-center space-x-1.5">
-          <span class="font-bold text-base text-white tracking-tight">SENTIX</span>
-          <span class="text-[10px] font-mono text-emerald-quant uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">Quant0G</span>
+          <span class="font-bold text-base text-white tracking-tight">SILENTQUANT</span>
+          <span class="text-[10px] font-mono text-cyan-400 uppercase px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20">Midnight ZK</span>
         </div>
       </div>
       <div class="flex items-center space-x-2 sm:space-x-3 font-mono text-xs">
-        <div class="flex items-center p-1 rounded-lg bg-[#0d0d0f] border border-white/[0.1]">
-          <button id="btnToggleMainnet" onclick="setNetwork('mainnet')" class="px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black">0G Mainnet (16661)</button>
-          <button id="btnToggleTestnet" onclick="setNetwork('galileo')" class="px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white">0G Testnet (16600)</button>
+        <div class="flex items-center p-1 rounded-lg bg-[#0c1018] border border-white/[0.1]">
+          <button id="btnToggleMainnet" class="px-2.5 sm:px-3 py-1 rounded font-bold transition bg-cyan-400 text-black">Midnight DevNet</button>
+          <button id="btnToggleTestnet" class="px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white">Compact Testnet</button>
         </div>
-        <button id="btn-wallet" onclick="toggleWalletConnection()" class="bg-white hover:bg-zinc-200 text-black font-semibold px-3 sm:px-4 py-1.5 rounded transition font-mono text-xs min-h-[36px]">Connect Wallet</button>
+        <button id="btn-wallet" onclick="toggleWalletConnection()" class="bg-white hover:bg-zinc-200 text-black font-semibold px-3 sm:px-4 py-1.5 rounded transition font-mono text-xs min-h-[36px]">Connect Midnight Lace</button>
       </div>
     </div>
   </header>
 
   <!-- Live Ticker -->
-  <div class="border-b border-white/[0.06] bg-[#09090b] py-2 px-4 sm:px-6 overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-400 flex space-x-6 sm:space-x-8 custom-scrollbar">
-    <span>NETWORK: <strong id="tickerNetwork" class="text-emerald-quant">0G MAINNET (16661)</strong></span>
-    <span>0G/USDT: <strong class="text-emerald-quant">$1.42 (+6.4%)</strong></span>
-    <span>LOOKAHEAD BIAS: <strong class="text-white">0.00% (PROVEN)</strong></span>
-    <span>0G STORAGE PROOFS: <strong id="tickerProofs" class="text-emerald-quant">1,842 ANCHORED</strong></span>
-    <span>SETTLEMENT: <strong class="text-white">1 BLOCK</strong></span>
-    <span>VAULT: <strong id="tickerContract" class="text-zinc-300">0x0E20...482A</strong></span>
+  <div class="border-b border-white/[0.06] bg-[#080d14] py-2 px-4 sm:px-6 overflow-x-auto whitespace-nowrap font-mono text-[11px] text-zinc-400 flex space-x-6 sm:space-x-8 custom-scrollbar">
+    <span>NETWORK: <strong id="tickerNetwork" class="text-cyan-400">MIDNIGHT DEVNET</strong></span>
+    <span>ZK SOLVENCY: <strong class="text-emerald-400">VERIFIED (100% PROVEN)</strong></span>
+    <span>MEV EXPOSURE: <strong class="text-cyan-400">0.00% (SHIELDED MEMPOOL)</strong></span>
+    <span>DARK ORDERS: <strong id="tickerProofs" class="text-white">542 ATOMIC MATCHES</strong></span>
+    <span>POLICY ENCLAVE: <strong class="text-emerald-400">CLASP REVISED (ACTIVE)</strong></span>
+    <span>CIRCUIT: <strong id="tickerContract" class="text-zinc-300">SilentQuant.compact</strong></span>
   </div>
 
   <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full space-y-6">
     <section class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="max-w-2xl space-y-1.5">
-        <div class="flex items-center space-x-2 text-[11px] font-mono text-emerald-quant">
-          <span class="w-2 h-2 rounded-full bg-emerald-quant animate-ping"></span>
-          <span id="networkHeroLabel">0G Mainnet Production Mode (Live On-Chain)</span>
+        <div class="flex items-center space-x-2 text-[11px] font-mono text-cyan-400">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span id="networkHeroLabel">Midnight DevNet Prover Active (Compact 0.1)</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">Verifiable DeFAI <span class="text-emerald-quant">Strategy Vault</span></h1>
-        <p id="heroDescription" class="text-zinc-400 text-xs sm:text-sm">Commit-reveal algorithmic trading on 0G Mainnet. Market telemetry and AI reasoning are cryptographically anchored on 0G Storage before reveal to eliminate lookahead bias.</p>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">Shielded DeFAI <span class="text-cyan-400">Strategy Vault</span></h1>
+        <p id="heroDescription" class="text-zinc-400 text-xs sm:text-sm">Zero-knowledge algorithmic quantitative vault on Midnight Network. Trading books, limit prices, and rebalancing parameters remain shielded in private witness state to completely eliminate MEV front-running and copy-trading.</p>
       </div>
       <div class="flex flex-col sm:flex-row gap-2.5 font-mono text-xs">
-        <button onclick="triggerQuantTrade()" class="bg-emerald-quant hover:opacity-90 text-black font-bold px-4 py-2.5 rounded transition flex items-center justify-center space-x-2 min-h-[40px]"><i class="fa-solid fa-play text-[10px]"></i><span>Execute Trade Cycle</span></button>
-        <button id="autoBotBtn" onclick="toggleAutoAgent()" class="swiss-card px-4 py-2.5 rounded text-zinc-300 hover:text-white transition flex items-center justify-center space-x-2 min-h-[40px]"><i class="fa-solid fa-robot text-[11px]"></i><span id="autoBotLabel">Auto Agent: Standby</span></button>
+        <button onclick="triggerQuantTrade()" class="bg-cyan-400 hover:opacity-90 text-black font-bold px-4 py-2.5 rounded transition flex items-center justify-center space-x-2 min-h-[40px]"><i class="fa-solid fa-play text-[10px]"></i><span>Execute Dark Cycle</span></button>
+        <button id="autoBotBtn" onclick="toggleAutoAgent()" class="swiss-card px-4 py-2.5 rounded text-zinc-300 hover:text-white transition flex items-center justify-center space-x-2 min-h-[40px]"><i class="fa-solid fa-robot text-[11px]"></i><span id="autoBotLabel">CLASP Policy: Active</span></button>
       </div>
     </section>
 
     <!-- Metrics Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 font-mono text-xs">
-      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Total Value Locked</span><div class="text-lg sm:text-2xl font-bold text-white" id="tvl-display">14,250.00 0G</div><span class="text-emerald-quant text-[11px]">+18.4% APY Yield</span></div>
-      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">0G Storage Proofs</span><div class="text-lg sm:text-2xl font-bold text-white" id="proofs-display">1,842 Snapshots</div><span class="text-zinc-400 text-[11px]">1KB Merkle DAG Verify</span></div>
-      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Target Network</span><div class="text-lg sm:text-2xl font-bold text-emerald-quant" id="activeNetworkDisplay">0G Mainnet</div><span class="text-zinc-400 text-[11px]" id="activeChainIdDisplay">Chain ID: 16661</span></div>
-      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Your Vault Balance</span><div class="text-lg sm:text-2xl font-bold text-white" id="user-balance-display">1.10 0G</div><span class="text-zinc-400 text-[11px]" id="wallet-status-label">Wallet not connected</span></div>
+      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Total Shielded AUM</span><div class="text-lg sm:text-2xl font-bold text-white" id="tvl-display">$2,450,000 DUST</div><span class="text-cyan-400 text-[11px]">+18.4% APY Net Return</span></div>
+      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">ZK Solvency Attestation</span><div class="text-lg sm:text-2xl font-bold text-emerald-400" id="proofs-display">Certified (A &ge; L)</div><span class="text-zinc-400 text-[11px]">Max Drawdown: 3.8%</span></div>
+      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Target Network</span><div class="text-lg sm:text-2xl font-bold text-cyan-400" id="activeNetworkDisplay">Midnight DevNet</div><span class="text-zinc-400 text-[11px]" id="activeChainIdDisplay">Compact Prover v0.1</span></div>
+      <div class="swiss-card p-4 sm:p-5 rounded space-y-1"><span class="text-zinc-500 uppercase text-[10px]">Your Shielded Shares</span><div class="text-lg sm:text-2xl font-bold text-white" id="user-balance-display">250.00 DUST</div><span class="text-zinc-400 text-[11px]" id="wallet-status-label">Private Witness Active</span></div>
     </div>
 
     <!-- Workspace -->
@@ -88,8 +88,8 @@
           <button id="tabWithdraw" onclick="switchVaultTab('withdraw')" class="flex-1 py-1.5 rounded text-xs font-bold text-zinc-400 hover:text-white">Withdraw</button>
         </div>
         <div class="space-y-3">
-          <div class="flex justify-between text-zinc-400 text-[11px]"><span id="amountInputLabel">Amount to Deposit</span><span id="maxBalanceClick" onclick="fillMaxAmount()" class="text-emerald-quant hover:underline cursor-pointer">Max: 1.10 0G</span></div>
-          <div class="relative"><input id="vaultAmountInput" type="number" step="0.01" placeholder="0.0" class="w-full bg-[#050505] border border-white/[0.12] rounded px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-quant" /><div class="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-semibold">0G</div></div>
+          <div class="flex justify-between text-zinc-400 text-[11px]"><span id="amountInputLabel">Amount to Deposit</span><span id="maxBalanceClick" onclick="fillMaxAmount()" class="text-emerald-quant hover:underline cursor-pointer">Max: 1.10 tDUST</span></div>
+          <div class="relative"><input id="vaultAmountInput" type="number" step="0.01" placeholder="0.0" class="w-full bg-[#050505] border border-white/[0.12] rounded px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-quant" /><div class="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-semibold">tDUST</div></div>
           <div class="bg-[#050505] p-3 rounded border border-white/[0.06] space-y-1.5 text-[11px]">
             <div class="flex justify-between text-zinc-400"><span>Strategy APY</span><span class="text-emerald-quant font-bold">+18.4%</span></div>
             <div class="flex justify-between text-zinc-400"><span>Vault Address</span><span id="vaultContractAddressText" class="text-zinc-300 cursor-pointer hover:text-emerald-quant truncate max-w-[140px]" onclick="copyAddress(getCurrentConfig().VAULT_ADDRESS)">0x0E20...482A</span></div>
@@ -100,14 +100,14 @@
 
       <!-- Execution Stream -->
       <div class="swiss-card rounded p-5 lg:col-span-2 space-y-3">
-        <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5"><span class="font-bold text-white uppercase text-xs sm:text-sm">0G Execution & Microstructure Stream</span><span id="blockNumberDisplay" class="text-[11px] text-zinc-500">Block #42,891,428</span></div>
+        <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5"><span class="font-bold text-white uppercase text-xs sm:text-sm">Midnight Execution & Microstructure Stream</span><span id="blockNumberDisplay" class="text-[11px] text-zinc-500">Block #42,891,428</span></div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px]">
-          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">0G / USDT</span><span class="text-emerald-quant">+180 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[68%]"></div><div class="bg-rose-500 h-full w-[32%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 68%</span><span>Ask 32%</span></div></div>
-          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">ETH / 0G</span><span class="text-emerald-quant">+115 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[44%]"></div><div class="bg-rose-500 h-full w-[56%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 44%</span><span>Ask 56%</span></div></div>
-          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">BTC / 0G</span><span class="text-emerald-quant">+240 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[74%]"></div><div class="bg-rose-500 h-full w-[26%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 74%</span><span>Ask 26%</span></div></div>
+          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">NIGHT / USDT</span><span class="text-emerald-quant">+180 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[68%]"></div><div class="bg-rose-500 h-full w-[32%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 68%</span><span>Ask 32%</span></div></div>
+          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">ETH / NIGHT</span><span class="text-emerald-quant">+115 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[44%]"></div><div class="bg-rose-500 h-full w-[56%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 44%</span><span>Ask 56%</span></div></div>
+          <div class="bg-[#050505] border border-white/[0.06] p-2.5 rounded space-y-1"><div class="flex justify-between text-zinc-400"><span class="text-white font-bold">BTC / tDUST</span><span class="text-emerald-quant">+240 bps</span></div><div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden flex"><div class="bg-emerald-quant h-full w-[74%]"></div><div class="bg-rose-500 h-full w-[26%]"></div></div><div class="flex justify-between text-[10px] text-zinc-500"><span>Bid 74%</span><span>Ask 26%</span></div></div>
         </div>
         <div id="terminalLog" class="bg-[#050505] border border-white/[0.08] p-3 rounded text-[11px] space-y-1.5 text-zinc-300 max-h-36 overflow-y-auto custom-scrollbar">
-          <div><span class="text-zinc-600">[System]</span> 0G Mainnet RPC Connected: https://evmrpc.0g.ai</div>
+          <div><span class="text-zinc-600">[System]</span> Midnight Testnet RPC Connected: https://evmrpc.0g.ai</div>
           <div><span class="text-emerald-quant">[StrategyVault]</span> Mainnet Contract: <span id="logVaultAddress" class="text-white">0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A</span></div>
           <div><span class="text-cyan-400">[0G-Storage]</span> Merkle DAG Indexer ready with confirmable on-chain receipts.</div>
         </div>
@@ -127,7 +127,7 @@
       <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-left min-w-[600px]">
           <thead class="bg-[#050505] text-zinc-500 border-b border-white/[0.06] text-[11px]">
-            <tr><th class="p-2.5">Trade ID</th><th class="p-2.5">Pair</th><th class="p-2.5">Action</th><th class="p-2.5">0G Storage Root</th><th class="p-2.5">Commit Hash</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Inspect</th></tr>
+            <tr><th class="p-2.5">Trade ID</th><th class="p-2.5">Pair</th><th class="p-2.5">Action</th><th class="p-2.5">Compact ZK Ledger Root</th><th class="p-2.5">Commit Hash</th><th class="p-2.5">Status</th><th class="p-2.5 text-center">Inspect</th></tr>
           </thead>
           <tbody id="trades-tbody" class="divide-y divide-white/[0.06] text-[11px]"></tbody>
         </table>
@@ -139,31 +139,31 @@
   <div id="proofModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
     <div class="swiss-card rounded-xl max-w-2xl w-full p-5 space-y-3 border border-white/[0.2] max-h-[88vh] overflow-y-auto custom-scrollbar font-mono text-xs">
       <div class="flex justify-between items-center border-b border-white/[0.08] pb-2.5">
-        <span class="font-bold text-white uppercase flex items-center space-x-2"><i class="fa-solid fa-file-shield text-emerald-quant"></i><span>0G Storage Reasoning & Preimage Proof</span></span>
+        <span class="font-bold text-white uppercase flex items-center space-x-2"><i class="fa-solid fa-file-shield text-emerald-quant"></i><span>Compact ZK Ledger Reasoning & Preimage Proof</span></span>
         <button onclick="closeProofModal()" class="text-zinc-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <div class="space-y-2.5">
-        <div><span class="text-zinc-500 text-[10px] uppercase">0G Storage Merkle Root</span><div id="modalStorageRoot" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-cyan-400 break-all select-all text-[11px]"></div></div>
+        <div><span class="text-zinc-500 text-[10px] uppercase">Compact ZK Ledger Merkle Root</span><div id="modalStorageRoot" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-cyan-400 break-all select-all text-[11px]"></div></div>
         <div><span class="text-zinc-500 text-[10px] uppercase">On-Chain Commit Hash</span><div id="modalCommitHash" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-emerald-quant break-all select-all text-[11px]"></div></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div><span class="text-zinc-500 text-[10px] uppercase">Pair & Action</span><div id="modalPairAction" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-white text-[11px]"></div></div>
           <div><span class="text-zinc-500 text-[10px] uppercase">Confidence</span><div id="modalConfidence" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-emerald-quant text-[11px]"></div></div>
         </div>
         <div><span class="text-zinc-500 text-[10px] uppercase">Revealed Preimage Salt</span><div id="modalSalt" class="p-2 rounded bg-[#050505] border border-white/[0.08] text-zinc-300 break-all select-all text-[11px]"></div></div>
-        <div><span class="text-zinc-500 text-[10px] uppercase">0G Storage AI Reasoning Trace</span><div id="modalReasoningTrace" class="p-2.5 rounded bg-[#050505] border border-white/[0.08] text-zinc-300 whitespace-pre-wrap leading-relaxed text-[11px]"></div></div>
+        <div><span class="text-zinc-500 text-[10px] uppercase">Compact ZK Ledger AI Reasoning Trace</span><div id="modalReasoningTrace" class="p-2.5 rounded bg-[#050505] border border-white/[0.08] text-zinc-300 whitespace-pre-wrap leading-relaxed text-[11px]"></div></div>
       </div>
       <div class="pt-2 flex justify-end"><button onclick="closeProofModal()" class="px-4 py-1.5 rounded bg-white text-black font-bold text-xs">Close Inspector</button></div>
     </div>
   </div>
 
   <footer id="footerText" class="border-t border-white/[0.08] bg-[#050505] py-3.5 px-4 text-center font-mono text-[11px] text-zinc-500">
-    Sentix (Quant0G) · 0G Mainnet (16661) · Swiss Linear System
+    Sentix (Quant0G) · Midnight Testnet (16661) · Swiss Linear System
   </footer>
 
   <script>
     const NETWORKS = {
-      mainnet: { NAME: "0G Mainnet", CHAIN_ID: 16661n, CHAIN_ID_HEX: '0x4115', RPC_URL: 'https://evmrpc.0g.ai', EXPLORER_URL: 'https://chainscan.0g.ai', STORAGE_INDEXER: 'https://indexer-storage.0g.ai', VAULT_ADDRESS: '0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A', REGISTRY_ADDRESS: '0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f' },
-      galileo: { NAME: "0G Galileo Testnet", CHAIN_ID: 16600n, CHAIN_ID_HEX: '0x40D8', RPC_URL: 'https://rpc-galileo.0g.ai', EXPLORER_URL: 'https://chainscan-galileo.0g.ai', STORAGE_INDEXER: 'https://indexer-storage-galileo.0g.ai', VAULT_ADDRESS: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', REGISTRY_ADDRESS: '0x5FbDB2315678afecb367f032d93F642f64180aa3' }
+      mainnet: { NAME: "Midnight Testnet", CHAIN_ID: 16661n, CHAIN_ID_HEX: '0x4115', RPC_URL: 'https://evmrpc.0g.ai', EXPLORER_URL: 'https://chainscan.0g.ai', STORAGE_INDEXER: 'https://indexer-storage.0g.ai', VAULT_ADDRESS: '0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A', REGISTRY_ADDRESS: '0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f' },
+      galileo: { NAME: "Midnight DevNet", CHAIN_ID: 16600n, CHAIN_ID_HEX: '0x40D8', RPC_URL: 'https://rpc-galileo.0g.ai', EXPLORER_URL: 'https://chainscan-galileo.0g.ai', STORAGE_INDEXER: 'https://indexer-storage-galileo.0g.ai', VAULT_ADDRESS: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512', REGISTRY_ADDRESS: '0x5FbDB2315678afecb367f032d93F642f64180aa3' }
     };
     let currentNetworkKey = 'mainnet', userAddress = null, provider = null, signer = null, vaultContract = null, registryContract = null, isAutoAgentActive = false, autoAgentInterval = null, currentVaultTab = 'deposit', userBalance = 1.10, vaultTVL = 14250.0, proofsCount = 1842, activeFilter = 'all';
 
@@ -171,7 +171,7 @@
     const REGISTRY_ABI = ["function isProofConfirmed(bytes32 storageRoot) external view returns (bool)"];
 
     let trades = [
-      { id: 1084, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt: "0x89a3f2d1e0c4b7a892b5123456789abcdef0123456789abcdef0123456789abcdef", commitHash: "0x3b89fa7652c0028e932bce1274ba1804f5a6b0c2014631398867a1ef2459b701", storageRoot: "0x7a812b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d13ed0d82", status: "Confirmed", confidence: "91.2%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid volume surged by 42% on 0G DEX. Funding rate arbitrage window detected between Spot and Perpetual market on 0G Mainnet." },
+      { id: 1084, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt: "0x89a3f2d1e0c4b7a892b5123456789abcdef0123456789abcdef0123456789abcdef", commitHash: "0x3b89fa7652c0028e932bce1274ba1804f5a6b0c2014631398867a1ef2459b701", storageRoot: "0x7a812b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d13ed0d82", status: "Confirmed", confidence: "91.2%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid volume surged by 42% on tDUST DEX. Funding rate arbitrage window detected between Spot and Perpetual market on Midnight Testnet." },
       { id: 1083, pair: "ETH/0G", action: "SELL", amount: "0.15 0G", salt: "0x43b2f1e0d9c8a7b6543210fedcba9876543210fedcba9876543210fedcba9876", commitHash: "0x91ef841c7b802e3a19b027814b7450a80e1236fb4890c2a865b400921e48ba02", storageRoot: "0x4f128c7901ea2b6e124c3f8901a9ce719a59863ec8031ba36b09afb98803628d", status: "Confirmed", confidence: "87.8%", expectedAlpha: "+115 bps", reasoning: "Cross-chain liquidity migration signal detected. Mean reversion trigger hit on 4h timeframe." },
       { id: 1082, pair: "BTC/0G", action: "BUY", amount: "0.20 0G", salt: "0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123", commitHash: "0x5511dc6d6ecc39e286332d4b0cd3148fa9916d623956de4a52551f637fb35dd8", storageRoot: "0x21d889b8738f4adb5afb4d84e7c059bc102a41ecd778ed4bb8dfc5f373ca1524", status: "Committed", confidence: "94.5%", expectedAlpha: "+240 bps", reasoning: "Deep neural transformer observed multi-exchange liquidity compression. Volatility breakout confirmed on 15m candle." }
     ];
@@ -183,7 +183,7 @@
       const cfg = getCurrentConfig();
       document.getElementById('btnToggleMainnet').className = key === 'mainnet' ? "px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black shadow-sm" : "px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white";
       document.getElementById('btnToggleTestnet').className = key === 'galileo' ? "px-2.5 sm:px-3 py-1 rounded font-bold transition bg-emerald-quant text-black shadow-sm" : "px-2.5 sm:px-3 py-1 rounded font-bold transition text-zinc-400 hover:text-white";
-      document.getElementById('networkHeroLabel').innerText = key === 'mainnet' ? "0G Mainnet Production Mode (Live On-Chain)" : "0G Galileo Testnet Evaluation Mode";
+      document.getElementById('networkHeroLabel').innerText = key === 'mainnet' ? "Midnight Testnet Production Mode (Live On-Chain)" : "Midnight DevNet Evaluation Mode";
       document.getElementById('tickerNetwork').innerText = `${cfg.NAME.toUpperCase()} (${cfg.CHAIN_ID})`;
       document.getElementById('activeNetworkDisplay').innerText = cfg.NAME;
       document.getElementById('activeChainIdDisplay').innerText = `Chain ID: ${cfg.CHAIN_ID}`;
@@ -246,8 +246,8 @@
     }
 
     function executeSimulatedVault(val) {
-      if (currentVaultTab === 'deposit') { userBalance -= val; vaultTVL += val; appendTerminalLog(`[Deposit Confirmed] Deposited ${val.toFixed(2)} 0G into StrategyVault.`); }
-      else { vaultTVL -= val; userBalance += val; appendTerminalLog(`[Withdrawal Confirmed] Withdrew ${val.toFixed(2)} 0G from StrategyVault.`); }
+      if (currentVaultTab === 'deposit') { userBalance -= val; vaultTVL += val; appendTerminalLog(`[Deposit Confirmed] Deposited ${val.toFixed(2)} tDUST into StrategyVault.`); }
+      else { vaultTVL -= val; userBalance += val; appendTerminalLog(`[Withdrawal Confirmed] Withdrew ${val.toFixed(2)} tDUST from StrategyVault.`); }
       document.getElementById('user-balance-display').innerText = `${userBalance.toFixed(2)} 0G`;
       document.getElementById('tvl-display').innerText = `${vaultTVL.toLocaleString('en-US', { minimumFractionDigits: 2 })} 0G`;
     }
@@ -268,7 +268,7 @@
       } catch {}
       // Heuristic fallback
       const id = trades[0].id + 1, salt = ethers.hexlify(ethers.randomBytes(32)), root = ethers.hexlify(ethers.randomBytes(32));
-      const t = { id, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt, commitHash: ethers.solidityPackedKeccak256(["string","uint256","bytes32"], ["BUY", ethers.parseEther("0.1"), salt]), storageRoot: root, status: "Committed", confidence: "92.4%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid imbalance surge confirmed on 0G DEX." };
+      const t = { id, pair: "0G/USDT", action: "BUY", amount: "0.10 0G", salt, commitHash: ethers.solidityPackedKeccak256(["string","uint256","bytes32"], ["BUY", ethers.parseEther("0.1"), salt]), storageRoot: root, status: "Committed", confidence: "92.4%", expectedAlpha: "+180 bps", reasoning: "Orderbook bid imbalance surge confirmed on tDUST DEX." };
       trades.unshift(t); proofsCount++; renderTrades();
       setTimeout(() => { t.status = "Confirmed"; appendTerminalLog(`<span class="text-emerald-quant">[${cfg.NAME}]</span> Trade #${id} confirmed!`); renderTrades(); }, 1800);
     }

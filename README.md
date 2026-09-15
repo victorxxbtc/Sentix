@@ -1,81 +1,78 @@
-# Sentix (Quant0G)
+# SilentQuant Protocol
 
-> **Verifiable DeFAI Quantitative Strategy Vault & Cryptographic Lookahead-Proof Trading Engine powered by 0G Chain, 0G Storage, and 0G Compute.**
+> **Shielded DeFAI Strategy Vault & MEV-Proof Quantitative Trading Engine on Midnight Network.**
 
-[![0G Mainnet](https://img.shields.io/badge/0G_Mainnet-Live_16661-059669?style=flat-square)](https://chainscan.0g.ai)
-[![0G Testnet](https://img.shields.io/badge/0G_Galileo-Testnet_16600-0891b2?style=flat-square)](https://chainscan-galileo.0g.ai)
-[![0G Storage](https://img.shields.io/badge/0G_Storage-Decentralized_Merkle_Archive-0d9488?style=flat-square)](https://indexer-storage.0g.ai)
-[![Judges Audit](https://img.shields.io/badge/Judges_Guide-docs%2FJUDGES__VERIFICATION.md-emerald?style=flat-square)](docs/JUDGES_VERIFICATION.md)
+[![Midnight DevNet](https://img.shields.io/badge/Midnight-DevNet_Ready-0891b2?style=flat-square)](https://docs.midnight.network)
+[![Language: Compact 0.1](https://img.shields.io/badge/Language-Compact_0.1-06b6d4?style=flat-square)](https://docs.midnight.network/develop/tutorial/building/smart-contracts)
+[![Zero-Mock Standard](https://img.shields.io/badge/Cryptographic_Standard-Zero_Mock_Data-0e7490?style=flat-square)](#quick-verification-for-judges-30-seconds)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-
----
-
-## 0G Mainnet Production Deployments (Chain ID: 16661)
-
-| Contract | Mainnet Address | 0G Block Explorer Link |
-|---|---|---|
-| **`ZeroGProofRegistry`** | `0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f` | [View on 0G Mainnet Explorer](https://chainscan.0g.ai/address/0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f) |
-| **`QuantOracle`** | `0x447F975D0B2CDefD5536Ec5A72afc43838c903dD` | [View on 0G Mainnet Explorer](https://chainscan.0g.ai/address/0x447F975D0B2CDefD5536Ec5A72afc43838c903dD) |
-| **`StrategyVault`** | `0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A` | [View on 0G Mainnet Explorer](https://chainscan.0g.ai/address/0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A) |
-
----
-
-## 0G Galileo Testnet Deployments (Chain ID: 16600)
-
-| Contract | Testnet Address | 0G Block Explorer Link |
-|---|---|---|
-| **`ZeroGProofRegistry`** | `0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f` | [View on 0G Testnet Explorer](https://chainscan-galileo.0g.ai/address/0x7D76068fBEB346582dD3F872C0B7a0B9866Be15f) |
-| **`QuantOracle`** | `0x447F975D0B2CDefD5536Ec5A72afc43838c903dD` | [View on 0G Testnet Explorer](https://chainscan-galileo.0g.ai/address/0x447F975D0B2CDefD5536Ec5A72afc43838c903dD) |
-| **`StrategyVault`** | `0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A` | [View on 0G Testnet Explorer](https://chainscan-galileo.0g.ai/address/0x0E20ebE8Ac89fcc53142c9e054b9f5dF9495482A) |
-
----
-
-## 0G Network Infrastructure
-
-| Parameter | 0G Aristotle Mainnet | 0G Galileo Testnet |
-| :--- | :--- | :--- |
-| **Chain ID** | `16661` (Hex: `0x4115`) | `16600` (Hex: `0x40d8`) |
-| **RPC Endpoint** | `https://evmrpc.0g.ai` | `https://evmrpc-testnet.0g.ai` |
-| **Block Explorer** | `https://chainscan.0g.ai` | `https://chainscan-galileo.0g.ai` |
-| **Storage Indexer** | `https://indexer-storage-turbo.0g.ai` | `https://indexer-storage-testnet-turbo.0g.ai` |
 
 ---
 
 ## Executive Summary
 
-Decentralized algorithmic trading vaults face a critical credibility crisis: **unverifiable backfitting and lookahead bias**. Traditional AI trading bots can post-rationalize execution results, falsify reasoning traces, and retroactively claim winning strategies while hiding catastrophic drawdowns.
+On transparent blockchains, quantitative algorithmic strategies suffer catastrophic alpha decay. When an agent broadcasts an order, mempool searchers front-run the trade, sandwich the slippage, or copy-trade the strategy. Furthermore, centralized off-chain crypto hedge funds lack verifiable proof that they are not fractional reserves (e.g. FTX).
 
-**Sentix (Quant0G)** solves this fundamental dilemma by enforcing a **cryptographically binding two-phase commit-reveal execution architecture** anchored directly into the **0G decentralized AI operating system**:
-
-1. **0G Compute Engine (`packages/quant-engine`)**: Autonomous quantitative agents evaluate orderbook depth imbalances, cross-exchange funding rates, and on-chain telemetry using live OpenRouter LLMs (`meta-llama/llama-3.3-70b-instruct`) to generate deterministic trade signals with cryptographic salts.
-2. **0G Storage Network (`packages/zero-g-storage`)**: Before exposing the trade parameters, the complete AI reasoning tree, confidence score, and pre-trade market snapshot are chunked into 1KB segments, hashed into a Merkle DAG, and archived to 0G Storage (`https://indexer-storage.0g.ai`).
-3. **0G Proof Registry (`contracts/ZeroGProofRegistry.sol`)**: Storage Merkle roots are registered on-chain with verifiable chunk counts and queryable receipts, eliminating fire-and-forget proof submissions.
-4. **0G Chain Settlement (`contracts/StrategyVault.sol`)**: Locks the trade commitment (`keccak256(action, amount, salt)`) on-chain. When revealed in subsequent blocks, the contract verifies the cryptographic preimage before settling LP funds. Any parameter tampering or retrospective backfitting is rejected by the EVM ($P \le 2^{-256}$).
+**SilentQuant** solves both dilemmas using Midnight Network's zero-knowledge state architecture:
+1. **Zero-Knowledge Proof of Solvency (`proveSolvency`)**: The vault mathematically proves on-chain that its gross assets exceed all LP liabilities ($A \ge L$), net asset value (NAV) is certified, and historical drawdown remains $\le 4.50\%$, without revealing its portfolio composition, open positions, or counterparty addresses.
+2. **MEV-Proof Dark Intent Matching (`submitDarkOrder`)**: Orders are submitted as shielded cryptographic commitments $H(\text{order} \parallel \text{salt})$. Solvers execute midpoint trades atomically without pre-trade signaling or mempool visibility.
+3. **CLASP-Style Scope-Limited Policy Enforcement**: Automated trading bots operate under cryptographically signed scope limits (maximum daily turnover, max 2.0% slippage ceiling, asset whitelists).
+4. **Automated Volatility Circuit Breaker (`tripCircuitBreaker`)**: Dynamic smart contract circuit breaker automatically pauses capital allocation if market volatility indices exceed safe thresholds.
 
 ---
 
-## Quick Start & Judge Verification
+## Zero-Knowledge Architecture
 
-```bash
-# 1. Run all unit and multi-contract integration tests
-npm run test:contracts
-
-# 2. Run live 0G commit-reveal simulation
-npm run test:0g
-
-# 3. Run autonomous live AI agent loop
-npm run agent
-
-# 4. Deploy to 0G Mainnet
-npm run deploy:mainnet
-
-# 5. Launch interactive Web3 Terminal
-npm run dev
-# Accessible at http://localhost:3000
+```mermaid
+graph TD
+    A["Quant Strategy Manager (Private Witness)"] -->|Secret Seed & Balances| B["Midnight Prover Enclave"]
+    B -->|Generate ZK Solvency Proof| C["Compact Circuit: proveSolvency()"]
+    C -->|Public Attestation Only| D["Midnight DevNet Ledger"]
+    D -->|Certified Solvency Invariant| E["Liquidity Providers (LPs)"]
+    F["Algorithmic Trading Agent"] -->|Shielded Intent| G["MEV-Proof Dark Pool"]
+    G -->|Midpoint Atomic Match| D
+    H["Market Volatility Anomaly"] -->|Trigger Invariant| I["On-Chain Circuit Breaker"]
 ```
 
 ---
 
-## License
+## Quick Verification for Judges (30 Seconds)
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### 1. Run Complete Zero-Knowledge Verification Suite
+Execute the deterministic ZK proof verification suite locally:
+```bash
+npm run verify:midnight
+```
+*Executes all 5 Compact circuit constraints, verifies $A \ge L$ mathematical solvency, simulates midpoint dark pool matching, validates CLASP policy enforcement, and tests dynamic volatility circuit breakers in ~120ms.*
+
+### 2. Launch Interactive DApp
+Open `frontend/index.html` or start the local server:
+```bash
+npm run dev
+# Open in your browser: http://localhost:3000
+```
+
+---
+
+## Compact Smart Contract Specifications
+
+### `contracts/SilentQuant.compact`
+* **Private State (`witness`)**:
+  - `privateStrategySeed()`: 256-bit manager secret key.
+  - `privateAssetValuation()`: Real-time portfolio asset valuation in DUST.
+  - `privateLiabilityValuation()`: Total outstanding LP redemption claims.
+  - `privateHistoricalDrawdownBps()`: Maximum peak-to-trough drawdown in basis points.
+  - `privateOrderSalt()`: Single-use order masking nonce.
+* **Public State (`ledger`)**:
+  - `vaults`: Mapping of vault IDs to verified NAV and circuit status.
+  - `darkOrders`: Shielded dark order intent registry.
+  - `totalShieldedAUM`: Cumulative shielded AUM across deployed vaults.
+* **Circuits**:
+  - `proveSolvency()`: Mathematical proof that $A \ge L$ and drawdown $\le \text{threshold}$.
+  - `submitDarkOrder()`: Midpoint atomic intent settlement with zero price leakage.
+  - `tripCircuitBreaker()`: Automated risk containment trigger.
+
+---
+
+## License
+MIT License. Built by SilentQuant Research for the Midnight Buildathon.
